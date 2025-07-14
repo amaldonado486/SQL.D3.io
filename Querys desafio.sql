@@ -84,3 +84,28 @@ left join comentarios c
 on p.id = c.post_id
 left join usuarios u
 on u.id = p.usuario_id;
+
+
+
+/*9.  Muestra el contenido del último comentario de cada usuario.*/
+
+select u.nombre as usuario,
+	  c.contenido as contenido_comentario,
+	  c.fecha_creacion as fecha_ult_comentario
+from usuarios u
+inner join comentarios c
+on u.id = c.usuario_id
+where c.fecha_creacion = (SELECT MAX(c2.fecha_creacion)
+                             FROM comentarios c2
+							 WHERE c2.usuario_id = u.id);
+
+
+--10. Muestra los emails de los usuarios que no han escrito ningún comentario.
+--Hint: Recuerda el uso de Having
+select u.nombre,
+	  u.email
+from usuarios u
+left join comentarios c on u.id = c.usuario_id
+group by u.nombre,
+	     u.email
+having count(c.id) = 0;							 
